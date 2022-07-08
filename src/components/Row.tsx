@@ -1,9 +1,12 @@
 import React, { ChangeEvent, useState } from "react";
 import { Item } from "../models/models";
 
+// propsの型定義
 type props = {
   index: number;
+  items: Item[];
   setIsNonNull: React.Dispatch<React.SetStateAction<boolean>>
+  setItems: React.Dispatch<React.SetStateAction<Item[]>>
 };
 
 // 日付をYYYY-MM-DDの書式で返すメソッド
@@ -14,7 +17,8 @@ function formatDate(dt: Date) {
   return y + "-" + m + "-" + d;
 }
 
-const Row: React.FC<props> = ({ index, setIsNonNull }) => {
+// 行コンポーネント
+const Row: React.FC<props> = ({ index, items, setIsNonNull, setItems }) => {
 
   const [onEdited, setOnEdited] = useState<Boolean>(false);
   const [item, setItem] = useState<Item>({
@@ -23,21 +27,20 @@ const Row: React.FC<props> = ({ index, setIsNonNull }) => {
     inOrOut: "支出",
   });
 
-
-
-  let test: boolean = item.id! % 2 === 0; // 本当はスタイルシートのところでテンプレート文字列で書きたかった。
-
+  // 入力があればitemステートに値をセットする
   const handleChange = (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    console.log(`${name}, ${value}`);
     setItem({ ...item, [name]: value });
   };
 
+  // 分類と金額に未入力がなければitemsステートに追加して新たな行を追加できるようにする
   const handleUpdate = () => {
-    
-    if(item.category && item.content) {
+    if(item.category && item.fee) {
+      setItems(
+        items.map((preItem, index) => (index === item.id ? item : preItem))
+      )
       setOnEdited((prevState: Boolean) => !prevState)
       setIsNonNull(true);
     } else {
@@ -47,6 +50,7 @@ const Row: React.FC<props> = ({ index, setIsNonNull }) => {
   }
 
   return onEdited ? (
+    // 編集中なら入力欄を表示する
     <>
       <tr>
         <td>
@@ -54,7 +58,7 @@ const Row: React.FC<props> = ({ index, setIsNonNull }) => {
             type="date"
             name="date"
             onChange={handleChange}
-            value={item?.date}
+            value={item.date}
           />
         </td>
         <td>
@@ -62,7 +66,7 @@ const Row: React.FC<props> = ({ index, setIsNonNull }) => {
             type="text"
             name="category"
             onChange={handleChange}
-            value={item?.category}
+            value={item.category}
           />
         </td>
         <td>
@@ -70,7 +74,7 @@ const Row: React.FC<props> = ({ index, setIsNonNull }) => {
             type="text"
             name="content"
             onChange={handleChange}
-            value={item?.content}
+            value={item.content}
           />
         </td>
         <td>
@@ -78,7 +82,7 @@ const Row: React.FC<props> = ({ index, setIsNonNull }) => {
             type="number"
             name="fee"
             onChange={handleChange}
-            value={item?.fee}
+            value={item.fee}
           />
         </td>
         <td>
@@ -98,17 +102,18 @@ const Row: React.FC<props> = ({ index, setIsNonNull }) => {
       </tr>
     </>
   ) : (
+    // 編集中でなければ、その値を表示する
     <>
       <tr
         style={{
-          backgroundColor: test ? "white" : "#d6d3cb",
+          backgroundColor: item.id! % 2 === 0 ? "white" : "#d6d3cb",
         }}
       >
-        <td>{item?.date}</td>
-        <td>{item?.category}</td>
-        <td>{item?.content}</td>
-        <td>{item?.fee}</td>
-        <td>{item?.inOrOut}</td>
+        <td>{item.date}</td>
+        <td>{item.category}</td>
+        <td>{item.content}</td>
+        <td>{item.fee}</td>
+        <td>{item.inOrOut}</td>
         <td>
           <button
             type="button"
