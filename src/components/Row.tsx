@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState, useEffect } from "react";
 import { Item } from "../models/models";
 
 // propsの型定義
@@ -11,19 +11,22 @@ type props = {
 
 // 日付をYYYY-MM-DDの書式で返すメソッド
 function formatDate(dt: Date) {
-  var y = dt.getFullYear();
-  var m = ("00" + (dt.getMonth() + 1)).slice(-2);
-  var d = ("00" + dt.getDate()).slice(-2);
+  let y = dt.getFullYear();
+  let m = ("00" + (dt.getMonth() + 1)).slice(-2);
+  let d = ("00" + dt.getDate()).slice(-2);
   return y + "-" + m + "-" + d;
 }
 
 // 行コンポーネント
 const Row: React.FC<props> = ({ index, items, setIsNonNull, setItems }) => {
 
+  const [isFilled, setIsFilled] = useState<Boolean>(false)
   const [onEdited, setOnEdited] = useState<Boolean>(false);
   const [item, setItem] = useState<Item>({
     id: index,
     date: formatDate(new Date(Date.now())),
+    category: "",
+    content: "",
     inOrOut: "支出",
   });
 
@@ -43,8 +46,10 @@ const Row: React.FC<props> = ({ index, items, setIsNonNull, setItems }) => {
       )
       setOnEdited((prevState: Boolean) => !prevState)
       setIsNonNull(true);
+      setIsFilled(true);
     } else {
       setIsNonNull(false);
+      setIsFilled(false);
     }
 
   }
@@ -52,7 +57,7 @@ const Row: React.FC<props> = ({ index, items, setIsNonNull, setItems }) => {
   return onEdited ? (
     // 編集中なら入力欄を表示する
     <>
-      <tr>
+      <tr style={{ border: isFilled ? "" : "solid red 2px" }}>
         <td>
           <input
             type="date"
@@ -86,7 +91,7 @@ const Row: React.FC<props> = ({ index, items, setIsNonNull, setItems }) => {
           />
         </td>
         <td>
-          <select name="inOrOut" onChange={handleChange} value={item?.inOrOut}>
+          <select name="inOrOut" onChange={handleChange} value={item.inOrOut}>
             <option value="収入">収入</option>
             <option value="支出">支出</option>
           </select>
@@ -107,6 +112,8 @@ const Row: React.FC<props> = ({ index, items, setIsNonNull, setItems }) => {
       <tr
         style={{
           backgroundColor: item.id! % 2 === 0 ? "white" : "#d6d3cb",
+          border: isFilled ? "" : "solid red 2px"
+
         }}
       >
         <td>{item.date}</td>

@@ -45,7 +45,6 @@ const App: React.FC = () => {
       (item): item is string => typeof item == "string"
     );
     setTotal(numList.reduce((sum, element) => sum + Number(element), 0));
-    console.log(numList);
   }, [items, total]);
 
   return (
