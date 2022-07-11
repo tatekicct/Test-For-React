@@ -1,8 +1,8 @@
 export interface Item {
-  id?: number;
+  id: number;
   date?: string ;
-  category?: string;
-  content?: string;
+  category: string;
+  content: string;
   fee?: string;
-  inOrOut?: string
+  inOrOut: string
 }
