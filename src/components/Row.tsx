@@ -1,12 +1,14 @@
-import React, { ChangeEvent, useState, useEffect } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { Item } from "../models/models";
+import { useDispatch } from "react-redux"
+import { bindActionCreators } from "redux";
+import * as actionCreators from "../state/action/actionCreators";
 
 // propsの型定義
 type props = {
   index: number;
   items: Item[];
-  setIsNonNull: React.Dispatch<React.SetStateAction<boolean>>
-  setItems: React.Dispatch<React.SetStateAction<Item[]>>
+  setItems: React.Dispatch<React.SetStateAction<Item[]>>;
 };
 
 // 日付をYYYY-MM-DDの書式で返すメソッド
@@ -18,9 +20,12 @@ function formatDate(dt: Date) {
 }
 
 // 行コンポーネント
-const Row: React.FC<props> = ({ index, items, setIsNonNull, setItems }) => {
+const Row: React.FC<props> = ({ index, items, setItems }) => {
+  // グローバルなステートにアクションする
+  const dispatch = useDispatch();
+  const { setIsNotNull } = bindActionCreators(actionCreators, dispatch);
 
-  const [isFilled, setIsFilled] = useState<Boolean>(false)
+  const [isFilled, setIsFilled] = useState<Boolean>(false);
   const [onEdited, setOnEdited] = useState<Boolean>(false);
   const [item, setItem] = useState<Item>({
     id: index,
@@ -40,19 +45,18 @@ const Row: React.FC<props> = ({ index, items, setIsNonNull, setItems }) => {
 
   // 分類と金額に未入力がなければitemsステートに追加して新たな行を追加できるようにする
   const handleUpdate = () => {
-    if(item.category && item.fee) {
+    if (item.category && item.fee) {
       setItems(
         items.map((preItem, index) => (index === item.id ? item : preItem))
-      )
-      setOnEdited((prevState: Boolean) => !prevState)
-      setIsNonNull(true);
+      );
+      setOnEdited((prevState: Boolean) => !prevState);
+      setIsNotNull(true);
       setIsFilled(true);
     } else {
-      setIsNonNull(false);
+      setIsNotNull(false);
       setIsFilled(false);
     }
-
-  }
+  };
 
   return onEdited ? (
     // 編集中なら入力欄を表示する
@@ -97,10 +101,7 @@ const Row: React.FC<props> = ({ index, items, setIsNonNull, setItems }) => {
           </select>
         </td>
         <td>
-          <button
-            type="button"
-            onClick={handleUpdate}
-          >
+          <button type="button" onClick={handleUpdate}>
             更新
           </button>
         </td>
@@ -112,8 +113,7 @@ const Row: React.FC<props> = ({ index, items, setIsNonNull, setItems }) => {
       <tr
         style={{
           backgroundColor: item.id! % 2 === 0 ? "white" : "#d6d3cb",
-          border: isFilled ? "" : "solid red 2px"
-
+          border: isFilled ? "" : "solid red 2px",
         }}
       >
         <td>{item.date}</td>

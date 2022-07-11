@@ -3,16 +3,25 @@ import Row from "./components/Row";
 import { Helmet } from 'react-helmet';
 import { Item } from "./models/models";
 
+import { useDispatch, useSelector } from "react-redux"
+import { bindActionCreators } from 'redux';
+import { State } from './state/reducers';
+import * as actionCreators from './state/action/actionCreators';
+
 import "./App.css";
 
 const App: React.FC = () => {
   const [items, setItems] = useState<Array<Item>>([]);
-  const [isNonNull, setIsNonNull] = useState(false);
   const [total, setTotal] = useState<number>(0);
+
+  // reduxを用いてグローパルなステートを定義する
+  const dispatch = useDispatch();
+  const { setIsNotNull } = bindActionCreators(actionCreators, dispatch)
+  const isNotNull = useSelector((state:State) => state.isNotNull)
 
   // 初期値は適当にして、行を追加
   const handleAdd = () => {
-    setIsNonNull(false);
+    setIsNotNull(false);
     setItems([
       ...items,
       {
@@ -68,7 +77,6 @@ const App: React.FC = () => {
           {items?.map((item, index) => (
             <Row
               index={index}
-              setIsNonNull={setIsNonNull}
               items={items}
               setItems={setItems}
               key={item.id}
@@ -78,7 +86,7 @@ const App: React.FC = () => {
       </table>
 
       <div>合計: {total}</div>
-      {isNonNull ? (
+      {isNotNull ? (
         // 未入力の行がなければ、行追加ボタンを表示
         <button type="button" onClick={handleAdd}>
           行を追加
