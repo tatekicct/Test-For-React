@@ -1,18 +1,19 @@
 import React, { ChangeEvent, useState } from "react";
 import { Item } from "../models/models";
+
 import { useDispatch } from "react-redux"
-import { bindActionCreators } from "redux";
-import * as actionCreators from "../state/action/actionCreators";
+import { setHasUndefinedRow } from '../state/slice/undefinedRowSlice'
+
 
 // propsの型定義
-type props = {
+type Props = {
   index: number;
   items: Item[];
   setItems: React.Dispatch<React.SetStateAction<Item[]>>;
 };
 
 // 日付をYYYY-MM-DDの書式で返すメソッド
-function formatDate(dt: Date) {
+const formatDate = (dt: Date) => {
   let y = dt.getFullYear();
   let m = ("00" + (dt.getMonth() + 1)).slice(-2);
   let d = ("00" + dt.getDate()).slice(-2);
@@ -20,11 +21,9 @@ function formatDate(dt: Date) {
 }
 
 // 行コンポーネント
-const Row: React.FC<props> = ({ index, items, setItems }) => {
+const Row: React.FC<Props> = ({ index, items, setItems }) => {
   // グローバルなステートにアクションする
   const dispatch = useDispatch();
-  const { setIsNotNull } = bindActionCreators(actionCreators, dispatch);
-
   const [isFilled, setIsFilled] = useState<Boolean>(false);
   const [onEdited, setOnEdited] = useState<Boolean>(false);
   const [item, setItem] = useState<Item>({
@@ -32,12 +31,13 @@ const Row: React.FC<props> = ({ index, items, setItems }) => {
     date: formatDate(new Date(Date.now())),
     category: "",
     content: "",
+    fee: "",
     inOrOut: "支出",
   });
 
   // 入力があればitemステートに値をセットする
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setItem({ ...item, [name]: value });
@@ -49,11 +49,11 @@ const Row: React.FC<props> = ({ index, items, setItems }) => {
       setItems(
         items.map((preItem, index) => (index === item.id ? item : preItem))
       );
-      setOnEdited((prevState: Boolean) => !prevState);
-      setIsNotNull(true);
+      setOnEdited((prevState) => !prevState);
+      dispatch(setHasUndefinedRow(true))
       setIsFilled(true);
     } else {
-      setIsNotNull(false);
+      dispatch(setHasUndefinedRow(false))
       setIsFilled(false);
     }
   };

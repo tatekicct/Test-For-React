@@ -3,6 +3,6 @@ export interface Item {
   date?: string ;
   category: string;
   content: string;
-  fee?: string;
+  fee: string;
   inOrOut: string
 }

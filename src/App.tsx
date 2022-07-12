@@ -4,24 +4,21 @@ import { Helmet } from 'react-helmet';
 import { Item } from "./models/models";
 
 import { useDispatch, useSelector } from "react-redux"
-import { bindActionCreators } from 'redux';
-import { State } from './state/reducers';
-import * as actionCreators from './state/action/actionCreators';
+import { setHasUndefinedRow } from './state/slice/undefinedRowSlice'
 
 import "./App.css";
 
 const App: React.FC = () => {
-  const [items, setItems] = useState<Array<Item>>([]);
+  const [items, setItems] = useState<Item[]>([]);
   const [total, setTotal] = useState<number>(0);
 
   // reduxを用いてグローパルなステートを定義する
   const dispatch = useDispatch();
-  const { setIsNotNull } = bindActionCreators(actionCreators, dispatch)
-  const isNotNull = useSelector((state:State) => state.isNotNull)
+  const hasUndefinedRow = useSelector((state: any) => state.undefinedRow.value)
 
   // 初期値は適当にして、行を追加
   const handleAdd = () => {
-    setIsNotNull(false);
+    dispatch(setHasUndefinedRow(false));
     setItems([
       ...items,
       {
@@ -49,11 +46,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const feeList = items.map((item) => item.inOrOut === "支出" ? item.fee : '-' + item.fee);
-    // undefinedの配列である可能性を排除( (string | undefined)[] => string[])
-    const numList = feeList.filter(
-      (item): item is string => typeof item == "string"
-    );
-    setTotal(numList.reduce((sum, element) => sum + Number(element), 0));
+    setTotal(feeList.reduce((sum, element) => sum + Number(element), 0));
   }, [items, total]);
 
   return (
@@ -86,7 +79,7 @@ const App: React.FC = () => {
       </table>
 
       <div>合計: {total}</div>
-      {isNotNull ? (
+      {hasUndefinedRow ? (
         // 未入力の行がなければ、行追加ボタンを表示
         <button type="button" onClick={handleAdd}>
           行を追加

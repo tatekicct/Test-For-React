@@ -1,7 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import reducers from "./reducers/index";
+import undefinedRowReducer from "./slice/undefinedRowSlice";
 
 
 export const store = configureStore({
-  reducer: reducers,
+  reducer: {
+    undefinedRow: undefinedRowReducer
+  }
 });
