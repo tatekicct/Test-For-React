@@ -1,29 +1,23 @@
 import React, { ChangeEvent, useState } from "react";
-import { Item } from "../models/models";
+import { Item, formatDate } from "../models/models";
 
-import { useDispatch } from "react-redux"
-import { setHasUndefinedRow } from '../state/slice/undefinedRowSlice'
-
+import { useDispatch, useSelector } from "react-redux";
+import { setHasUndefinedRow } from "../state/slice/undefinedRowSlice";
+import { setItems } from "../state/slice/itemsSlice";
+import { State } from "../state/store";
 
 // propsの型定義
 type Props = {
   index: number;
-  items: Item[];
-  setItems: React.Dispatch<React.SetStateAction<Item[]>>;
 };
 
-// 日付をYYYY-MM-DDの書式で返すメソッド
-const formatDate = (dt: Date) => {
-  let y = dt.getFullYear();
-  let m = ("00" + (dt.getMonth() + 1)).slice(-2);
-  let d = ("00" + dt.getDate()).slice(-2);
-  return y + "-" + m + "-" + d;
-}
-
 // 行コンポーネント
-const Row: React.FC<Props> = ({ index, items, setItems }) => {
-  // グローバルなステートにアクションする
+const Row: React.FC<Props> = ({ index }) => {
+  // グローバルなステート
   const dispatch = useDispatch();
+  const items = useSelector((state: State) => state.items.value)
+  
+  // ローカルなコンポーネントステート
   const [isFilled, setIsFilled] = useState<Boolean>(false);
   const [onEdited, setOnEdited] = useState<Boolean>(false);
   const [item, setItem] = useState<Item>({
@@ -46,14 +40,16 @@ const Row: React.FC<Props> = ({ index, items, setItems }) => {
   // 分類と金額に未入力がなければitemsステートに追加して新たな行を追加できるようにする
   const handleUpdate = () => {
     if (item.category && item.fee) {
-      setItems(
-        items.map((preItem, index) => (index === item.id ? item : preItem))
+      dispatch(
+        setItems(
+          items.map((preItem, index) => (index === item.id ? item : preItem))
+        )
       );
       setOnEdited((prevState) => !prevState);
-      dispatch(setHasUndefinedRow(true))
+      dispatch(setHasUndefinedRow(true));
       setIsFilled(true);
     } else {
-      dispatch(setHasUndefinedRow(false))
+      dispatch(setHasUndefinedRow(false));
       setIsFilled(false);
     }
   };
@@ -124,7 +120,7 @@ const Row: React.FC<Props> = ({ index, items, setItems }) => {
         <td>
           <button
             type="button"
-            onClick={() => setOnEdited((prevState: Boolean) => !prevState)}
+            onClick={() => setOnEdited((prevState) => !prevState)}
           >
             編集
           </button>

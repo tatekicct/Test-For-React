@@ -1,60 +1,50 @@
 import React, { useEffect, useState } from "react";
 import Row from "./components/Row";
-import { Helmet } from 'react-helmet';
-import { Item } from "./models/models";
+import { Helmet } from "react-helmet";
+import { Item, formatDate } from "./models/models";
 
-import { useDispatch, useSelector } from "react-redux"
-import { setHasUndefinedRow } from './state/slice/undefinedRowSlice'
-
+import { useDispatch, useSelector } from "react-redux";
+import { setHasUndefinedRow } from "./state/slice/undefinedRowSlice";
+import { addItem } from "./state/slice/itemsSlice";
+import { State } from "./state/store";
 import "./App.css";
 
 const App: React.FC = () => {
-  const [items, setItems] = useState<Item[]>([]);
+  const items = useSelector((state: State) => state.items.value);
   const [total, setTotal] = useState<number>(0);
 
   // reduxを用いてグローパルなステートを定義する
   const dispatch = useDispatch();
-  const hasUndefinedRow = useSelector((state: any) => state.undefinedRow.value)
+  const hasUndefinedRow = useSelector(
+    (state: State) => state.undefinedRow.value
+  );
 
   // 初期値は適当にして、行を追加
   const handleAdd = () => {
+    const initialState: Item = {
+      id: items.length,
+      date: formatDate(new Date(Date.now())),
+      category: "",
+      content: "",
+      fee: "",
+      inOrOut: "支出",
+    };
     dispatch(setHasUndefinedRow(false));
-    setItems([
-      ...items,
-      {
-        id: items.length,
-        category: "",
-        content: "",
-        fee: "",
-        inOrOut: "支出",
-      },
-    ]);
+    dispatch(addItem(initialState));
   };
 
-  // 最初のレンダリング後は、行を１つだけ追加した状態から始める
+  // itemsが更新されるたびに、合計金額を計算する
   useEffect(() => {
-    setItems([
-      {
-        id: 0,
-        category: "",
-        content: "",
-        fee: "",
-        inOrOut: "支出",
-      },
-    ]);
-  }, []);
-
-  useEffect(() => {
-    const feeList = items.map((item) => item.inOrOut === "支出" ? item.fee : '-' + item.fee);
+    const feeList = items.map((item) =>
+      item.inOrOut === "支出" ? item.fee : "-" + item.fee
+    );
     setTotal(feeList.reduce((sum, element) => sum + Number(element), 0));
   }, [items, total]);
 
   return (
     <div>
       <Helmet>
-        <title>
-          {`収支: ${total}`}
-        </title>
+        <title>{`収支: ${total}`}</title>
       </Helmet>
 
       <table>
@@ -67,13 +57,8 @@ const App: React.FC = () => {
             <th>収入・支出</th>
             <th>編集</th>
           </tr>
-          {items?.map((item, index) => (
-            <Row
-              index={index}
-              items={items}
-              setItems={setItems}
-              key={item.id}
-            />
+          {items.map((item, index) => (
+            <Row index={index} key={item.id} />
           ))}
         </tbody>
       </table>
