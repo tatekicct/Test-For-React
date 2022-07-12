@@ -28,6 +28,7 @@ const App: React.FC = () => {
       content: "",
       fee: "",
       inOrOut: "支出",
+      isFilled: false
     };
     dispatch(setHasUndefinedRow(false));
     dispatch(addItem(initialState));
@@ -40,6 +41,16 @@ const App: React.FC = () => {
     );
     setTotal(feeList.reduce((sum, element) => sum + Number(element), 0));
   }, [items, total]);
+
+  // itemsが更新されるたびに、未入力の行がないか確認
+  useEffect(() => {
+    dispatch(setHasUndefinedRow(true));
+    items.forEach((item) => {
+      if(!item.isFilled){
+        dispatch(setHasUndefinedRow(false));
+      } 
+    })
+  }, [items, hasUndefinedRow, dispatch]);
 
   return (
     <div>

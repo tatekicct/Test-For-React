@@ -5,6 +5,7 @@ export interface Item {
   content: string;
   fee: string;
   inOrOut: string
+  isFilled: boolean
 }
 
 // 日付をYYYY-MM-DDの書式で返すメソッド

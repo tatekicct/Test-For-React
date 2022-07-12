@@ -2,11 +2,10 @@ import React, { ChangeEvent, useState } from "react";
 import { Item, formatDate } from "../models/models";
 
 import { useDispatch, useSelector } from "react-redux";
-import { setHasUndefinedRow } from "../state/slice/undefinedRowSlice";
 import { setItems } from "../state/slice/itemsSlice";
 import { State } from "../state/store";
 
-// propsの型定義
+// Propsの型定義
 type Props = {
   index: number;
 };
@@ -15,11 +14,11 @@ type Props = {
 const Row: React.FC<Props> = ({ index }) => {
   // グローバルなステート
   const dispatch = useDispatch();
-  const items = useSelector((state: State) => state.items.value)
-  
+  const items = useSelector((state: State) => state.items.value);
+
   // ローカルなコンポーネントステート
-  const [isFilled, setIsFilled] = useState<Boolean>(false);
-  const [onEdited, setOnEdited] = useState<Boolean>(false);
+  const [isFilled, setIsFilled] = useState<boolean>(false);
+  const [onEdited, setOnEdited] = useState<boolean>(false);
   const [item, setItem] = useState<Item>({
     id: index,
     date: formatDate(new Date(Date.now())),
@@ -27,6 +26,7 @@ const Row: React.FC<Props> = ({ index }) => {
     content: "",
     fee: "",
     inOrOut: "支出",
+    isFilled: false,
   });
 
   // 入力があればitemステートに値をセットする
@@ -42,14 +42,21 @@ const Row: React.FC<Props> = ({ index }) => {
     if (item.category && item.fee) {
       dispatch(
         setItems(
-          items.map((preItem, index) => (index === item.id ? item : preItem))
+          items.map((preItem, index) =>
+            index === item.id ? { ...item, isFilled: true } : preItem
+          )
         )
       );
-      setOnEdited((prevState) => !prevState);
-      dispatch(setHasUndefinedRow(true));
       setIsFilled(true);
+      setOnEdited((prevState) => !prevState);
     } else {
-      dispatch(setHasUndefinedRow(false));
+      dispatch(
+        setItems(
+          items.map((preItem, index) =>
+            index === item.id ? { ...item, isFilled: false } : preItem
+          )
+        )
+      );
       setIsFilled(false);
     }
   };
@@ -57,7 +64,10 @@ const Row: React.FC<Props> = ({ index }) => {
   return onEdited ? (
     // 編集中なら入力欄を表示する
     <>
-      <tr style={{ border: isFilled ? "" : "solid red 2px" }}>
+      <tr
+        onBlur={handleUpdate}
+        style={{ border: isFilled ? "" : "solid red 2px" }}
+      >
         <td>
           <input
             type="date"
@@ -97,7 +107,7 @@ const Row: React.FC<Props> = ({ index }) => {
           </select>
         </td>
         <td>
-          <button type="button" onClick={handleUpdate}>
+          <button type="button" onClick={handleUpdate} onBlur={handleUpdate}>
             更新
           </button>
         </td>
@@ -107,6 +117,7 @@ const Row: React.FC<Props> = ({ index }) => {
     // 編集中でなければ、その値を表示する
     <>
       <tr
+        onClick={() => setOnEdited((prevState) => !prevState)}
         style={{
           backgroundColor: item.id! % 2 === 0 ? "white" : "#d6d3cb",
           border: isFilled ? "" : "solid red 2px",
@@ -120,7 +131,7 @@ const Row: React.FC<Props> = ({ index }) => {
         <td>
           <button
             type="button"
-            onClick={() => setOnEdited((prevState) => !prevState)}
+            onFocus={() => setOnEdited((prevState) => !prevState)}
           >
             編集
           </button>

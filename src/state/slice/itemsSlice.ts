@@ -11,6 +11,7 @@ export const itemsSlice = createSlice({
       content: "",
       fee: "",
       inOrOut: "支出",
+      isFilled: false
     }]
   },
   reducers: {
