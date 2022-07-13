@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
-import Row from "./components/Row";
 import { Helmet } from "react-helmet";
-import { Item, formatDate } from "./models/models";
+import Row from "./components/Row";
+import { formatDate, Item } from "./models/models";
 
 import { useDispatch, useSelector } from "react-redux";
-import { setHasUndefinedRow } from "./state/slice/undefinedRowSlice";
-import { addItem } from "./state/slice/itemsSlice";
-import { State } from "./state/store";
 import "./App.css";
+import { addItem } from "./state/slice/itemsSlice";
+import { setHasUndefinedRow } from "./state/slice/undefinedRowSlice";
+import { State } from "./state/store";
+
+import { AddIcon, WarningIcon } from "@chakra-ui/icons";
+import { Box, Button, Container } from "@chakra-ui/react";
+
+import { Table, TableContainer, Tbody, Th, Thead, Tr } from "@chakra-ui/react";
 
 const App: React.FC = () => {
   const items = useSelector((state: State) => state.items.value);
@@ -28,7 +33,7 @@ const App: React.FC = () => {
       content: "",
       fee: "",
       inOrOut: "支出",
-      isFilled: false
+      isFilled: false,
     };
     dispatch(setHasUndefinedRow(false));
     dispatch(addItem(initialState));
@@ -46,45 +51,51 @@ const App: React.FC = () => {
   useEffect(() => {
     dispatch(setHasUndefinedRow(true));
     items.forEach((item) => {
-      if(!item.isFilled){
+      if (!item.isFilled) {
         dispatch(setHasUndefinedRow(false));
-      } 
-    })
+      }
+    });
   }, [items, hasUndefinedRow, dispatch]);
 
   return (
-    <div>
+    <Container maxW="900px">
       <Helmet>
         <title>{`収支: ${total}`}</title>
       </Helmet>
 
-      <table>
-        <tbody>
-          <tr>
-            <th>日付</th>
-            <th>分類</th>
-            <th>内容</th>
-            <th>金額</th>
-            <th>収入・支出</th>
-            <th>編集</th>
-          </tr>
-          {items.map((item, index) => (
-            <Row index={index} key={item.id} />
-          ))}
-        </tbody>
-      </table>
+      <TableContainer>
+        <Table variant="striped" colorScheme='gray'>
+          <Thead>
+            <Tr>
+              <Th fontSize="xl">日付</Th>
+              <Th fontSize="xl">分類</Th>
+              <Th fontSize="xl">内容</Th>
+              <Th fontSize="xl">金額</Th>
+              <Th fontSize="xl">収入・支出</Th>
+              <Th fontSize="xl">編集/更新</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {items.map((item, index) => (
+              <Row index={index} key={item.id} />
+            ))}
+          </Tbody>
+        </Table>
+      </TableContainer>
 
-      <div>合計: {total}</div>
+      <Box fontSize="2xl" fontWeight='bold'>合計: {total}</Box>
       {hasUndefinedRow ? (
         // 未入力の行がなければ、行追加ボタンを表示
-        <button type="button" onClick={handleAdd}>
+        <Button leftIcon={<AddIcon />} colorScheme="teal" onClick={handleAdd}>
           行を追加
-        </button>
+        </Button>
       ) : (
         // 未入力の行があれば、注意喚起
-        <p style={{ color: "red" }}>※分類か金額が未入力の項目があります。</p>
+        <p style={{ color: "red" }}>
+          {<WarningIcon w={8} h={8} />}分類か金額が未入力の項目があります。
+        </p>
       )}
-    </div>
+    </Container>
   );
 };
 

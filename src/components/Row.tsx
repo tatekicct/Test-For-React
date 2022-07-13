@@ -5,6 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { setItems } from "../state/slice/itemsSlice";
 import { State } from "../state/store";
 
+import { Button, Input, Select } from "@chakra-ui/react";
+import { Tr, Td, Text } from "@chakra-ui/react";
+import { EditIcon, RepeatIcon } from "@chakra-ui/icons";
+
 // Propsの型定義
 type Props = {
   index: number;
@@ -64,79 +68,94 @@ const Row: React.FC<Props> = ({ index }) => {
   return onEdited ? (
     // 編集中なら入力欄を表示する
     <>
-      <tr
+      <Tr
         onBlur={handleUpdate}
         style={{ border: isFilled ? "" : "solid red 2px" }}
       >
-        <td>
-          <input
+        <Td>
+          <Input
             type="date"
             name="date"
             onChange={handleChange}
             value={item.date}
           />
-        </td>
-        <td>
-          <input
+        </Td>
+        <Td>
+          <Input
+            isRequired
             type="text"
             name="category"
             onChange={handleChange}
             value={item.category}
+            outline="1px solid blue"
           />
-        </td>
-        <td>
-          <input
-            type="text"
+        </Td>
+        <Td>
+          <Input
             name="content"
             onChange={handleChange}
             value={item.content}
+            outline="1px solid blue"
+            maxLength={20}
           />
-        </td>
-        <td>
-          <input
-            type="number"
+        </Td>
+        <Td>
+          <Input
+            isRequired
             name="fee"
             onChange={handleChange}
             value={item.fee}
+            outline="1px solid blue"
           />
-        </td>
-        <td>
-          <select name="inOrOut" onChange={handleChange} value={item.inOrOut}>
+        </Td>
+        <Td>
+          <Select
+            name="inOrOut"
+            onChange={handleChange}
+            value={item.inOrOut}
+            outline="1px solid blue"
+          >
             <option value="収入">収入</option>
             <option value="支出">支出</option>
-          </select>
-        </td>
-        <td>
-          <button type="button" onClick={handleUpdate} onBlur={handleUpdate}>
-            更新
-          </button>
-        </td>
-      </tr>
+          </Select>
+        </Td>
+        <Td>
+          <Button
+            colorScheme="blue"
+            onClick={handleUpdate}
+            onBlur={handleUpdate}
+          >
+            <RepeatIcon />
+          </Button>
+        </Td>
+      </Tr>
     </>
   ) : (
     // 編集中でなければ、その値を表示する
     <>
-      <tr
+      <Tr
         onClick={() => setOnEdited((prevState) => !prevState)}
         style={{
-          backgroundColor: item.id! % 2 === 0 ? "white" : "#d6d3cb",
           border: isFilled ? "" : "solid red 2px",
         }}
       >
-        <td>{item.date}</td>
-        <td>{item.category}</td>
-        <td>{item.content}</td>
-        <td>{item.fee}</td>
-        <td>{item.inOrOut}</td>
-        <td>
-          <button
+        <Td>{item.date}</Td>
+        <Td>{item.category}</Td>
+        <Td maxW="3">
+          <Text overflowWrap="normal">{item.content}</Text>
+        </Td>
+        <Td>{item.fee}</Td>
+        <Td>{item.inOrOut}</Td>
+        <Td>
+          <Button
+            colorScheme="blue"
             type="button"
             onFocus={() => setOnEdited((prevState) => !prevState)}
           >
-            編集
-          </button>
-        </td>
-      </tr>
+            <EditIcon />
+          </Button>
+        </Td>
+      </Tr>
     </>
   );
 };
