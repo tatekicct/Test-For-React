@@ -1,12 +1,12 @@
 import React, { ChangeEvent, useState } from "react";
 import { Item, formatDate } from "../models/models";
-
+// redux関連
 import { useDispatch, useSelector } from "react-redux";
 import { setItems } from "../state/slice/itemsSlice";
 import { State } from "../state/store";
-
-import { Button, Input, Select } from "@chakra-ui/react";
-import { Tr, Td, Text } from "@chakra-ui/react";
+// chakra-ui関連
+import { Button, Input, Select, Textarea } from "@chakra-ui/react";
+import { Tr, Td } from "@chakra-ui/react";
 import { EditIcon, RepeatIcon } from "@chakra-ui/icons";
 
 // Propsの型定義
@@ -35,7 +35,7 @@ const Row: React.FC<Props> = ({ index }) => {
 
   // 入力があればitemステートに値をセットする
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setItem({ ...item, [name]: value });
@@ -78,6 +78,7 @@ const Row: React.FC<Props> = ({ index }) => {
             name="date"
             onChange={handleChange}
             value={item.date}
+            outline="1px solid blue"
           />
         </Td>
         <Td>
@@ -91,12 +92,14 @@ const Row: React.FC<Props> = ({ index }) => {
           />
         </Td>
         <Td>
-          <Input
+          <Textarea
             name="content"
             onChange={handleChange}
             value={item.content}
             outline="1px solid blue"
-            maxLength={20}
+            overflow="hidden"
+            placeholder="30文字以内"
+            maxLength={30}
           />
         </Td>
         <Td>
@@ -141,9 +144,7 @@ const Row: React.FC<Props> = ({ index }) => {
       >
         <Td>{item.date}</Td>
         <Td>{item.category}</Td>
-        <Td maxW="3">
-          <Text overflowWrap="normal">{item.content}</Text>
-        </Td>
+        <Td>{item.content}</Td>
         <Td>{item.fee}</Td>
         <Td>{item.inOrOut}</Td>
         <Td>

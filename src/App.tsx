@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Helmet } from "react-helmet";
+import "./App.css";
+// コンポーネント
 import Row from "./components/Row";
 import { formatDate, Item } from "./models/models";
-
+// redux関連
 import { useDispatch, useSelector } from "react-redux";
-import "./App.css";
 import { addItem } from "./state/slice/itemsSlice";
 import { setHasUndefinedRow } from "./state/slice/undefinedRowSlice";
 import { State } from "./state/store";
-
+// chakra-ui関連
 import { AddIcon, WarningIcon } from "@chakra-ui/icons";
 import { Box, Button, Container } from "@chakra-ui/react";
-
 import { Table, TableContainer, Tbody, Th, Thead, Tr } from "@chakra-ui/react";
 
 const App: React.FC = () => {
@@ -57,22 +56,24 @@ const App: React.FC = () => {
     });
   }, [items, hasUndefinedRow, dispatch]);
 
-  return (
-    <Container maxW="900px">
-      <Helmet>
-        <title>{`収支: ${total}`}</title>
-      </Helmet>
+    // 合計金額をタイトル表示する:
+    useEffect(() => {
+      document.title = `収支 ${total}`;
+    }, [total]);
 
-      <TableContainer>
+  return (
+    <Container maxW="1000px">
+
+      <TableContainer whiteSpace="normal">
         <Table variant="striped" colorScheme='gray'>
-          <Thead>
+          <Thead borderBottom="2px solid black">
             <Tr>
-              <Th fontSize="xl">日付</Th>
-              <Th fontSize="xl">分類</Th>
+              <Th fontSize="xl" w="15%">日付</Th>
+              <Th fontSize="xl" w="15%">分類</Th>
               <Th fontSize="xl">内容</Th>
-              <Th fontSize="xl">金額</Th>
-              <Th fontSize="xl">収入・支出</Th>
-              <Th fontSize="xl">編集/更新</Th>
+              <Th fontSize="xl" w="15%">金額</Th>
+              <Th fontSize="xl" w="15%">収入/支出</Th>
+              <Th fontSize="xl" w="5%"></Th>
             </Tr>
           </Thead>
           <Tbody>
