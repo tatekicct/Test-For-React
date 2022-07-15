@@ -1,37 +1,33 @@
-import React, { ChangeEvent, useState } from "react";
-import { Item, formatDate } from "../models/models";
+import React, { ChangeEvent } from "react";
+import { Item } from "../model/model";
+
+import { Button, Input, Select, Td, Textarea, Tr } from "@chakra-ui/react";
+import { RepeatIcon } from "@chakra-ui/icons";
+
 // redux関連
 import { useDispatch, useSelector } from "react-redux";
-import { setItems } from "../state/slice/itemsSlice";
+import { updateItem } from "../state/slice/itemsSlice";
 import { State } from "../state/store";
-// chakra-ui関連
-import { Button, Input, Select, Textarea } from "@chakra-ui/react";
-import { Tr, Td } from "@chakra-ui/react";
-import { EditIcon, RepeatIcon } from "@chakra-ui/icons";
 
 // Propsの型定義
 type Props = {
-  index: number;
+  isFilled: boolean;
+  item: Item;
+  setOnEdited: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsFilled: React.Dispatch<React.SetStateAction<boolean>>;
+  setItem: React.Dispatch<React.SetStateAction<Item>>;
 };
 
-// 行コンポーネント
-const Row: React.FC<Props> = ({ index }) => {
+const EditMode: React.FC<Props> = ({
+  isFilled,
+  item,
+  setOnEdited,
+  setIsFilled,
+  setItem,
+}) => {
   // グローバルなステート
   const dispatch = useDispatch();
   const items = useSelector((state: State) => state.items.value);
-
-  // ローカルなコンポーネントステート
-  const [isFilled, setIsFilled] = useState<boolean>(false);
-  const [onEdited, setOnEdited] = useState<boolean>(false);
-  const [item, setItem] = useState<Item>({
-    id: index,
-    date: formatDate(new Date(Date.now())),
-    category: "",
-    content: "",
-    fee: "",
-    inOrOut: "支出",
-    isFilled: false,
-  });
 
   // 入力があればitemステートに値をセットする
   const handleChange = (
@@ -44,29 +40,16 @@ const Row: React.FC<Props> = ({ index }) => {
   // 分類と金額に未入力がなければitemsステートに追加して新たな行を追加できるようにする
   const handleUpdate = () => {
     if (item.category && item.fee) {
-      dispatch(
-        setItems(
-          items.map((preItem, index) =>
-            index === item.id ? { ...item, isFilled: true } : preItem
-          )
-        )
-      );
+
+      dispatch(updateItem({ items: items, item: item, isFilled: true }));
       setIsFilled(true);
       setOnEdited((prevState) => !prevState);
     } else {
-      dispatch(
-        setItems(
-          items.map((preItem, index) =>
-            index === item.id ? { ...item, isFilled: false } : preItem
-          )
-        )
-      );
+      dispatch(updateItem({ items: items, item: item, isFilled: false }));
       setIsFilled(false);
     }
   };
-
-  return onEdited ? (
-    // 編集中なら入力欄を表示する
+  return (
     <>
       <Tr
         onBlur={handleUpdate}
@@ -133,32 +116,7 @@ const Row: React.FC<Props> = ({ index }) => {
         </Td>
       </Tr>
     </>
-  ) : (
-    // 編集中でなければ、その値を表示する
-    <>
-      <Tr
-        onClick={() => setOnEdited((prevState) => !prevState)}
-        style={{
-          border: isFilled ? "" : "solid red 2px",
-        }}
-      >
-        <Td>{item.date}</Td>
-        <Td>{item.category}</Td>
-        <Td>{item.content}</Td>
-        <Td>{item.fee}</Td>
-        <Td>{item.inOrOut}</Td>
-        <Td>
-          <Button
-            colorScheme="blue"
-            type="button"
-            onFocus={() => setOnEdited((prevState) => !prevState)}
-          >
-            <EditIcon />
-          </Button>
-        </Td>
-      </Tr>
-    </>
   );
 };
 
-export default Row;
+export default EditMode;
