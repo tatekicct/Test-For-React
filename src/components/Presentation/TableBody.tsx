@@ -1,7 +1,7 @@
 import React from "react";
-import { Item } from "../model/model";
+import { Item } from "../../model/model";
 import { Tbody } from "@chakra-ui/react";
-import ItemRow from "./ItemRow";
+import ItemRow from "../Container/ItemRow";
 
 type Props = {
   data: Item[];

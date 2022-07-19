@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Table, TableContainer } from "@chakra-ui/react";
-
-import TableHeader from "./TableHeader";
-import TableBody from "./TableBody";
 // redux関連
 import { useSelector } from "react-redux";
-import { State } from "../state/store";
-import AddRowButton from "./AddRowButton";
+import { State } from "../../state/store";
+import TableComponentPresentation from "../Presentation/TableComponentPresentation";
 
 const TableComponent: React.FC = () => {
   const items = useSelector((state: State) => state.items.value);
@@ -23,18 +19,11 @@ const TableComponent: React.FC = () => {
   }, [items, hasUndefinedRow]);
 
   return (
-    <>
-      <TableContainer whiteSpace="normal">
-        <Table variant="striped" colorScheme="gray">
-          <TableHeader />
-          <TableBody data={items} />
-        </Table>
-      </TableContainer>
-      <AddRowButton
-        hasUndefinedRow={hasUndefinedRow}
-        setHasUndefinedRow={setHasUndefinedRow}
-      />
-    </>
+    <TableComponentPresentation
+      items={items}
+      hasUndefinedRow={hasUndefinedRow}
+      setHasUndefinedRow={setHasUndefinedRow}
+    />
   );
 };
 
