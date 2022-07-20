@@ -19,15 +19,15 @@ const AddRowButtonPresentation: React.FC<Props> = ({
         合計: {total}
       </Box>
       {hasUndefinedRow ? (
-        // 未入力の行がなければ、行追加ボタンを表示
-        <Button leftIcon={<AddIcon />} colorScheme="teal" onClick={handleAdd}>
-          行を追加
-        </Button>
-      ) : (
         // 未入力の行があれば、注意喚起
         <p style={{ color: "red" }}>
           {<WarningIcon w={8} h={8} />}分類か金額が未入力の項目があります。
         </p>
+      ) : (
+        // 未入力の行がなければ、行追加ボタンを表示
+        <Button leftIcon={<AddIcon />} colorScheme="teal" onClick={handleAdd}>
+          行を追加
+        </Button>
       )}
     </>
   );

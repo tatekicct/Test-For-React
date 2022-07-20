@@ -6,14 +6,14 @@ import TableComponentPresentation from "../Presentation/TableComponentPresentati
 
 const TableComponent: React.FC = () => {
   const items = useSelector((state: State) => state.items.value);
-  const [hasUndefinedRow, setHasUndefinedRow] = useState(false);
+  const [hasUndefinedRow, setHasUndefinedRow] = useState(true);
 
   // itemsが更新されるたびに、未入力の行がないか確認
   useEffect(() => {
-    setHasUndefinedRow(true);
+    setHasUndefinedRow(false);
     items.forEach((item) => {
       if (!item.isFilled) {
-        setHasUndefinedRow(false);
+        setHasUndefinedRow(true);
       }
     });
   }, [items, hasUndefinedRow]);

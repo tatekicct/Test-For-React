@@ -30,6 +30,8 @@ const EditModePresentation: React.FC<Props> = ({
           <Input
             type="date"
             name="date"
+            role="date"
+            aria-label="date"
             onChange={handleChange}
             value={item.date}
             outline="1px solid blue"
@@ -40,6 +42,7 @@ const EditModePresentation: React.FC<Props> = ({
             isRequired
             type="text"
             name="category"
+            aria-label="category"
             onChange={handleChange}
             value={item.category}
             outline="1px solid blue"
@@ -48,6 +51,7 @@ const EditModePresentation: React.FC<Props> = ({
         <Td>
           <Textarea
             name="content"
+            aria-label="content"
             onChange={handleChange}
             value={item.content}
             outline="1px solid blue"
@@ -60,6 +64,7 @@ const EditModePresentation: React.FC<Props> = ({
           <Input
             isRequired
             name="fee"
+            aria-label="fee"
             onChange={handleChange}
             value={item.fee}
             outline="1px solid blue"
@@ -68,12 +73,13 @@ const EditModePresentation: React.FC<Props> = ({
         <Td>
           <Select
             name="inOrOut"
+            aria-label="inOrOut"
             onChange={handleChange}
             value={item.inOrOut}
             outline="1px solid blue"
           >
-            <option value="収入">収入</option>
-            <option value="支出">支出</option>
+            <option value="収入" aria-label="収入">収入</option>
+            <option value="支出" aria-label="支出">支出</option>
           </Select>
         </Td>
         <Td>

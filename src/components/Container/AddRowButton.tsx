@@ -21,7 +21,7 @@ const AddRowButton: React.FC<Props> = ({
 
   // 初期値は適当にして、行を追加
   const handleAdd = () => {
-    setHasUndefinedRow(false);
+    setHasUndefinedRow(true);
     dispatch(addItem(initialItem(items.length)));
   };
 
