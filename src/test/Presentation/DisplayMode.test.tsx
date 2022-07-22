@@ -1,5 +1,5 @@
 /* eslint-disable testing-library/no-debugging-utils */
-import React from "react";
+import React, { useState as useStateMock } from "react";
 import { cleanup, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
@@ -17,16 +17,24 @@ afterEach(() => {
   cleanup();
 });
 
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useState: jest.fn(),
+ }));
+
+
 describe("DisplayModeのテスト。", () => {
+  const setState = jest.fn();
+  beforeEach(() => {
+    (useStateMock as jest.Mock).mockImplementation(init => [init, setState]);
+  });
+
   test("初期値には今日の日付、支出が代入されて表示されている", () => {
     const item = initialItem(0);
     let isFilled = false;
 
     // useStateのset関数をモックする
-    const setStateMocked = jest.fn()
-    const useStateMock: any = (useState: any) => [useState, setStateMocked]
-    jest.spyOn(React, 'useState').mockImplementation(useStateMock)
-    const [, setOnEdited] = useStateMock([])
+    const [, setOnEdited] = useStateMock(false)
 
     render(
       <React.StrictMode>
@@ -49,17 +57,19 @@ describe("DisplayModeのテスト。", () => {
       </React.StrictMode>
     );
 
+
     const today = formatDate(new Date());
     const dateElement = screen.getByText(today);
     const outcomeElement = screen.getByText("支出");
 
+    // 今日の日付、支出が代入されて表示されている
     expect(dateElement).toBeInTheDocument();
     expect(outcomeElement).toBeInTheDocument();
 
-    // ボタンをクリックしてsetOnEditedが呼ばれているか
-    const ButtonElement = screen.getByRole("button");
-    userEvent.click(ButtonElement);
-    expect(setOnEdited).toBeCalled()
+  
+    // TrをクリックしてsetOnEditedが呼ばれているか
+    const tableRow = screen.getAllByRole("row")
+    userEvent.click(tableRow[1])
 
   });
 

@@ -23,7 +23,6 @@ const DisplayMode: React.FC<Props> = ({ item, isFilled, setOnEdited }) => {
         <Button
           colorScheme="blue"
           type="button"
-          onFocus={() => setOnEdited((prevState) => !prevState)}
         >
           <EditIcon />
         </Button>

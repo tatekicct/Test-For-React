@@ -1,5 +1,5 @@
 /* eslint-disable testing-library/no-debugging-utils */
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
 import userEvent from "@testing-library/user-event";
@@ -9,15 +9,18 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { initialItem, dummyData, Item } from "../../model/model";
 import { useSelector, useDispatch } from "react-redux";
 
+
+afterEach(() => {
+  jest.resetAllMocks()
+  cleanup();
+})
+
 jest.mock("react-redux");
 const useSelectorMock = useSelector as jest.Mock;
 const useDispatchMock = useDispatch as jest.Mock;
 
 describe("AddRowButtonのロジック", () => {
 
-  afterEach(() => {
-    jest.resetAllMocks()
-  })
 
   test("useSelect, useDispatchのモックができるか", () => {
     let hasUndefinedRow = false;

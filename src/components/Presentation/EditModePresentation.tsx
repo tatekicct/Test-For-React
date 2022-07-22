@@ -85,8 +85,6 @@ const EditModePresentation: React.FC<Props> = ({
         <Td>
           <Button
             colorScheme="blue"
-            onClick={handleUpdate}
-            onBlur={handleUpdate}
           >
             <RepeatIcon />
           </Button>
