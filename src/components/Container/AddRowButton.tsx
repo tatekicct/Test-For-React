@@ -7,7 +7,7 @@ import AddRowButtonPresentation from "../Presentation/AddRowButtonPresentation";
 
 type Props = {
   hasUndefinedRow: boolean;
-  setHasUndefinedRow: (hasUndefinedRow: boolean) => void; // React.Dispatch<React.SetStateAction<boolean>>とどっちがいい？
+  setHasUndefinedRow: (hasUndefinedRow: boolean) => void; 
 };
 
 const AddRowButton: React.FC<Props> = ({

@@ -28,3 +28,16 @@ export const initialItem = (id: number) => {
     isFilled: false,
   };
 };
+
+// dummyData
+export const dummyData = (id: number) => {
+  return {
+    id: id,
+    date: formatDate(new Date(Date.now())),
+    category: "",
+    content: "",
+    fee: "",
+    inOrOut: "収入",
+    isFilled: true,
+  };
+};
