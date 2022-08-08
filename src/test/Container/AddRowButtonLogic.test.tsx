@@ -4,24 +4,20 @@ import "@testing-library/jest-dom";
 
 import userEvent from "@testing-library/user-event";
 import AddRowButton from "../../components/Container/AddRowButton";
-import { ChakraProvider } from "@chakra-ui/react";
 
 import { initialItem, dummyData, Item } from "../../model/model";
 import { useSelector, useDispatch } from "react-redux";
 
-
 afterEach(() => {
-  jest.resetAllMocks()
+  jest.resetAllMocks();
   cleanup();
-})
+});
 
 jest.mock("react-redux");
 const useSelectorMock = useSelector as jest.Mock;
 const useDispatchMock = useDispatch as jest.Mock;
 
 describe("AddRowButtonのロジック", () => {
-
-
   test("useSelect, useDispatchのモックができるか", () => {
     let hasUndefinedRow = false;
     const setHasUndefinedRow = jest.fn((input: boolean) => {
@@ -30,24 +26,22 @@ describe("AddRowButtonのロジック", () => {
 
     // ダミーのuseSelector, useDispatchを作る
     const items = [initialItem(0), dummyData(1)] as Item[];
-    useSelectorMock.mockReturnValue(items);
-    useDispatchMock.mockReturnValue(jest.fn())
+    useSelectorMock.mockImplementation((selector) =>
+      selector({ items: { value: items } })
+    );
+    useDispatchMock.mockImplementation(() => jest.fn())
 
     render(
-      <ChakraProvider>
-        <AddRowButton
-          hasUndefinedRow={hasUndefinedRow}
-          setHasUndefinedRow={setHasUndefinedRow}
-        />
-      </ChakraProvider>
+      <AddRowButton
+        hasUndefinedRow={hasUndefinedRow}
+        setHasUndefinedRow={setHasUndefinedRow}
+      />
     );
-    expect(useDispatchMock).toHaveBeenCalled();
-    expect(useSelectorMock).toHaveBeenCalled();
 
     // 行を追加ボタンをクリックする
     const ButtonElement = screen.getByRole("button");
     userEvent.click(ButtonElement);
     // Dispatchが呼ばれていることを確認
-    expect(useDispatchMock).toHaveBeenCalledTimes(3)
+    expect(useDispatchMock).toHaveBeenCalled();
   });
 });

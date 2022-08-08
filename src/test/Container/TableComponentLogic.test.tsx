@@ -5,7 +5,7 @@ import "@testing-library/jest-dom";
 
 import { useSelector } from "react-redux";
 
-import { ChakraProvider, Container } from "@chakra-ui/react";
+import { Container } from "@chakra-ui/react";
 
 import { dummyData, initialItem, Item } from "../../model/model";
 import TableComponent from "../../components/Container/TableComponent";
@@ -24,14 +24,14 @@ describe("TableComponentのテスト。", () => {
   test("useSelectorが呼ばれている", () => {
     // ダミーのuseSelectorを作る
     const items = [initialItem(0), dummyData(1)] as Item[];
-    useSelectorMock.mockImplementation(() => items);
+    useSelectorMock.mockImplementation((selector) =>
+      selector({ items: { value: items } })
+    );
 
     render(
-      <ChakraProvider>
         <Container maxW="1000px" minW="800px">
           <TableComponent />
         </Container>
-      </ChakraProvider>
     );
 
     expect(useSelectorMock).toHaveBeenCalled();

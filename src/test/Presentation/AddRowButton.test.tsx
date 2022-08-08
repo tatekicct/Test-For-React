@@ -5,14 +5,16 @@ import "@testing-library/jest-dom";
 import AddRowButtonPresentation from "../../components/Presentation/AddRowButtonPresentation";
 import userEvent from "@testing-library/user-event";
 
-afterEach(() => {
-  cleanup();
-});
+describe("AddRowButton", () => {
 
-describe("AddRowButtonに関するテスト", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    cleanup();
+  });
+  const handleAdd = jest.fn();
+
   test("ボタンをクリックするとhandleAddが呼ばれる", () => {
     // jest.fn(implementation) は jest.fn().mockImplementation(implementation) の省略形
-    const handleAdd = jest.fn();
     render(
       <AddRowButtonPresentation
         hasUndefinedRow={false}
@@ -22,14 +24,13 @@ describe("AddRowButtonに関するテスト", () => {
     );
     // ボタンをクリックする
     const ButtonElement = screen.getByRole("button");
-    expect(ButtonElement).toBeInTheDocument();
     userEvent.click(ButtonElement);
-    expect(handleAdd.mock.calls.length).toBe(1)
+    expect(handleAdd).toBeCalled()
     
   });
 
   test("totalがpropertyの値どおりに表示される", () => {
-    const handleAdd = jest.fn();
+    
     render(
       <AddRowButtonPresentation
         hasUndefinedRow={false}
@@ -43,7 +44,7 @@ describe("AddRowButtonに関するテスト", () => {
   });
 
   test("hasUndefinedRow=trueにすると、行ボタンは消えて、エラーメッセージが表示される",() => {
-    const handleAdd = jest.fn();
+    
     render(
       <AddRowButtonPresentation
         hasUndefinedRow={true}

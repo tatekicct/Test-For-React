@@ -3,12 +3,11 @@ import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
 import userEvent from "@testing-library/user-event";
-import { ChakraProvider, Table, Tbody } from "@chakra-ui/react";
+import { Table, Tbody } from "@chakra-ui/react";
 
 import { initialItem, dummyData, Item } from "../../model/model";
 import { useSelector, useDispatch } from "react-redux";
 import EditModeContainer from "../../components/Container/EditModeContainer";
-import TableHeader from "../../components/Presentation/TableHeader";
 
 jest.mock("react-redux");
 const useSelectorMock = useSelector as jest.Mock;
@@ -28,13 +27,13 @@ describe("EditModeContainerのロジック", () => {
 
     // ダミーのuseSelector, useDispatchを作る
     const items = [initialItem(0), dummyData(1)] as Item[];
-    useSelectorMock.mockReturnValue(items);
+    useSelectorMock.mockImplementation((selector) =>
+      selector({ items: { value: items } })
+    );
     useDispatchMock.mockReturnValue(jest.fn());
 
     render(
-      <ChakraProvider>
         <Table variant="striped" colorScheme="gray">
-          <TableHeader />
           <Tbody>
             <EditModeContainer
               item={initialItem(0)}
@@ -45,7 +44,6 @@ describe("EditModeContainerのロジック", () => {
             />
           </Tbody>
         </Table>
-      </ChakraProvider>
     );
     expect(useDispatchMock).toHaveBeenCalled();
     expect(useSelectorMock).toHaveBeenCalled();
