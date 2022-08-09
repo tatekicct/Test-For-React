@@ -33,9 +33,10 @@ describe("DisplayMode", () => {
 
   test("初期値には今日の日付、支出が代入されて表示されている", () => {
     // useStateのset関数をモックする
-    const [onEdited, setOnEdited] = useStateMock(false);
+    const [, setOnEdited] = useStateMock(false);
 
     render(
+      <>
       <TableContainer whiteSpace="normal">
         <Table variant="striped" colorScheme="gray">
           <TableHeader />
@@ -48,6 +49,7 @@ describe("DisplayMode", () => {
           </Tbody>
         </Table>
       </TableContainer>
+      </>
     );
 
     const today = formatDate(new Date());

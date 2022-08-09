@@ -62,7 +62,7 @@ describe("EditMode", () => {
     const feeInputElement = screen.getByRole("textbox", { name: "fee" });
     userEvent.type(feeInputElement, "300");
 
-    // 編集終了ボタンを押してみる
+    // 編集終了ボタンを押す
     const Btn = screen.getByRole("button");
     userEvent.click(Btn);
     expect(handleUpdate).toBeCalled();

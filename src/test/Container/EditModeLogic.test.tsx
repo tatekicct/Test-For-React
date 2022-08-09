@@ -18,7 +18,7 @@ describe("EditModeContainerのロジック", () => {
     jest.resetAllMocks();
   });
 
-  test("useSelect, useDispatchのモックができるか", () => {
+  test("useSelect, useDispatchのモックが正しく呼ばれているか", () => {
     let isFilled = false;
 
     const setIsFilled = jest.fn();
