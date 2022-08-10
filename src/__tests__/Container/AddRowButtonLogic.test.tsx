@@ -28,7 +28,8 @@ describe("AddRowButtonのロジック", () => {
     useSelectorMock.mockImplementation((selector) =>
       selector({ items: { value: items } })
     );
-    useDispatchMock.mockImplementation(() => jest.fn())
+    const dispatchMock = jest.fn()
+    useDispatchMock.mockImplementation(() => dispatchMock)
 
     render(
       <AddRowButton
@@ -43,5 +44,11 @@ describe("AddRowButtonのロジック", () => {
 
     // Dispatchが呼ばれていることを確認
     expect(useDispatchMock).toHaveBeenCalled();
+
+    // dispatchMockの引数が正しい。
+    expect(dispatchMock).toHaveBeenCalledWith({
+      payload: initialItem(2),
+      type: "items/addItem"
+    });
   });
 });

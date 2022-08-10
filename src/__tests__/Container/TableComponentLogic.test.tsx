@@ -5,7 +5,6 @@ import "@testing-library/jest-dom";
 
 import { useSelector } from "react-redux";
 
-import { Container } from "@chakra-ui/react";
 
 import { dummyData, initialItem, Item } from "../../model/model";
 import TableComponent from "../../components/Container/TableComponent";
@@ -31,5 +30,6 @@ describe("TableComponentのテスト。", () => {
     render(<TableComponent />);
 
     expect(useSelectorMock).toHaveBeenCalled();
+    console.log(useSelectorMock.call)
   });
 });

@@ -21,7 +21,8 @@ jest.mock("react", () => ({
 }));
 
 describe("DisplayMode", () => {
-  const setState = jest.fn().mockImplementation((state) => !state);
+  const setState = jest.fn()
+  setState.mockImplementation()
 
   beforeEach(() => {
     // useStateMock関数を定義する

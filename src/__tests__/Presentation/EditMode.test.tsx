@@ -18,6 +18,9 @@ afterEach(() => {
 });
 
 describe("EditMode", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  })
   const item = initialItem(0);
   const handleChange = jest.fn();
   const handleUpdate = jest.fn();
@@ -66,6 +69,7 @@ describe("EditMode", () => {
     const Btn = screen.getByRole("button");
     userEvent.click(Btn);
     expect(handleUpdate).toBeCalled();
+
   });
 
   test("isFilled:true", () => {
